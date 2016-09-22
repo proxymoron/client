@@ -273,7 +273,7 @@
                        />                   
     <bal:Condition
       Message="Microsoft patch KB2533623 is not installed. A reboot is needed between the installation of said patch and the installation of Keybase. https://support.microsoft.com/en-us/kb/2533623">
-      <![CDATA[Installed OR VersionNT > v6.1 OR (VersionNT = v6.1 AND ((KERNEL32VERSION >= 6.1.7600.16816 AND KERNEL32VERSION < v6.1.7601.00000) OR KERNEL32VERSION >= 6.1.7601.17617))]]>
+      <![CDATA[Installed OR VersionNT > v6.1 OR (VersionNT = v6.1 AND ((KERNEL32VERSION >= v6.1.7600.16816 AND KERNEL32VERSION < v6.1.7601.00000) OR KERNEL32VERSION >= v6.1.7601.17617))]]>
     </bal:Condition>
   </Fragment>
 
