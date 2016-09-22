@@ -12,6 +12,7 @@
 
     <Log PathVariable="LOGPATH_PROP"/>
     <util:FileSearchRef Id='WINTRUST_FileSearch' />
+    <util:FileSearchRef Id='SearchKernel32' />
     <util:RegistrySearchRef Id='InnoCLIUninstall' />
     <util:RegistrySearchRef Id='InnoCLIUninstall64' />
     <util:RegistrySearchRef Id='InnoKBFSUninstall' />
@@ -72,6 +73,7 @@
                      Result="version"
                        />
 
+    
     <util:RegistrySearch Id="vcredist_2015_x86_check" Root="HKLM" Key="SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum" Value="Install" Variable="vcredist_2015_x86_installed" Win64="no"/>
     <util:RegistrySearch Id="vcredist_2015_x86_versioncheck" Root="HKLM" Key="SOFTWARE\Classes\Installer\Dependencies\Microsoft.VS.VC_RuntimeMinimumVSU_x86,v14" Value="Version" Variable="vcredist_2015_x86_version" Result="exists" Win64="no"/>
     <util:RegistrySearch Id="vcredist_2015_x86_versionnumbercheck" Root="HKLM" Key="SOFTWARE\Classes\Installer\Dependencies\Microsoft.VS.VC_RuntimeMinimumVSU_x86,v14" Value="Version" Variable="vcredist_2015_x86_versionnumber" Result="value" Win64="no"/>
@@ -262,6 +264,19 @@
       <![CDATA[Installed OR VersionNT > v6.1 OR (VersionNT = v6.1 AND ((WINTRUSTVERSION >= v6.1.7601.18741 AND WINTRUSTVERSION < v6.1.7601.22000) OR WINTRUSTVERSION >= v6.1.7601.22948))]]>
     </bal:Condition>
   </Fragment>
+  
+  <Fragment>    
+  <util:FileSearch Id="SearchKernel32"
+                     Path="[WindowsFolder]System32\kernel32.dll"
+                     Variable="KERNEL32VERSION"
+                     Result="version"
+                       />                   
+    <bal:Condition
+      Message="Microsoft patch KB2533623 is not installed. A reboot is needed between the installation of said patch and the installation of Keybase. https://support.microsoft.com/en-us/kb/2533623">
+      <![CDATA[Installed OR VersionNT > v6.1 OR (VersionNT = v6.1 AND ((KERNEL32VERSION >= 6.1.7600.16816 AND KERNEL32VERSION < v6.1.7601.00000) OR KERNEL32VERSION >= 6.1.7601.17617))]]>
+    </bal:Condition>
+  </Fragment>
+
   <Fragment>
     <util:RegistrySearch
           Id='InnoCLIUninstall'
