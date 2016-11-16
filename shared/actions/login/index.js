@@ -438,6 +438,7 @@ function makeKex2IncomingMap (dispatch, getState, onBack: SimpleCB, onProvisione
         }
       }
 
+      // This can be appended on either loginTab or devicesTab.
       dispatch(navigateAppend([{
         selected: 'codePage',
         mapStateToProps,
