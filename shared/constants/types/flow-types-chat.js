@@ -711,7 +711,7 @@ export type MessageConversationMetadata = {
 }
 
 export type MessageDelete = {
-  messageID: MessageID,
+  messageIDs?: ?Array<MessageID>,
 }
 
 export type MessageEdit = {
