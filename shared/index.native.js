@@ -10,8 +10,8 @@ import {makeEngine} from './engine'
 import {serializeRestore, serializeSave, timeTravel, timeTravelForward, timeTravelBack} from './constants/dev'
 import {setup as setupLocalDebug, dumbSheetOnly} from './local-debug'
 import {stateKey} from './constants/reducer'
-import routeDefs from '../shared/routes'
-import {setRouteDef} from '../shared/actions/route-tree'
+import routeDefs from './routes'
+import {setRouteDef} from './actions/route-tree'
 
 module.hot && module.hot.accept(() => {
   console.log('accepted update in shared/index.native')
