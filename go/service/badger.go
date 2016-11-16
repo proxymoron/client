@@ -32,10 +32,18 @@ func newBadger(g *libkb.GlobalContext) *Badger {
 
 func (b *Badger) PushState(state gregor1.State) {
 	b.badgeState.UpdateWithGregor(state)
+	err := b.send()
+	if err != nil {
+		b.G().Log.Warning("Badger send (pushstate) failed: %v", err)
+	}
 }
 
 func (b *Badger) PushChatUpdate(update chat1.UnreadUpdate, inboxVers chat1.InboxVers) {
 	b.badgeState.UpdateWithChat(update, inboxVers)
+	err := b.send()
+	if err != nil {
+		b.G().Log.Warning("Badger send (pushchatupdate) failed: %v", err)
+	}
 }
 
 func (b *Badger) Resync(ctx context.Context, remoteClient *chat1.RemoteClient) error {
@@ -45,9 +53,27 @@ func (b *Badger) Resync(ctx context.Context, remoteClient *chat1.RemoteClient) e
 		return err
 	}
 	b.badgeState.UpdateWithChatFull(update)
-	return nil
+	err = b.send()
+	if err != nil {
+		b.G().Log.Warning("Badger send (resync) failed: %v", err)
+	}
+	return err
 }
 
-func (b *Badger) Clear() {
+func (b *Badger) Clear(ctx context.Context) {
 	b.badgeState.Clear()
+	err := b.send()
+	if err != nil {
+		b.G().Log.Warning("Badger send (clear) failed: %v", err)
+	}
+}
+
+// Send the badgestate to electron
+func (b *Badger) send() error {
+	state, err := b.badgeState.Export()
+	if err != nil {
+		return err
+	}
+	b.G().NotifyRouter.HandleBadgeState(state)
+	return nil
 }

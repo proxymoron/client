@@ -254,7 +254,7 @@ func (g *gregorHandler) Connect(uri *rpc.FMPURI) (err error) {
 
 	if g.badger != nil {
 		go func(badger *Badger) {
-			badger.Resync(context.TODO(), &chat1.RemoteClient{Cli: g.cli})
+			badger.Resync(context.Background(), &chat1.RemoteClient{Cli: g.cli})
 		}(g.badger)
 	}
 
