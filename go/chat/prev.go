@@ -15,7 +15,7 @@ import (
 // TODO: All of this should happen in the cache instead of here all at once.
 func CheckPrevPointersAndGetUnpreved(thread *chat1.ThreadView) ([]chat1.MessagePreviousPointer, libkb.ChatThreadConsistencyError) {
 	// Filter out the messages that gave unboxing errors, and index the rest by
-	// ID. Enforce that there are no duplicate IDs.
+	// ID. Enforce that there are no duplicate IDs or absurd prev pointers.
 	// TODO: What should we really be doing with unboxing errors? Do we worry
 	//       about an evil server causing them intentionally?
 	knownMessages := make(map[chat1.MessageID]chat1.MessageUnboxedValid)
@@ -35,6 +35,18 @@ func CheckPrevPointersAndGetUnpreved(thread *chat1.ThreadView) ([]chat1.MessageP
 					id)
 			}
 
+			// Check that each prev pointer (if any) is a lower ID than the
+			// message itself.
+			for _, prev := range msg.ClientHeader.Prev {
+				if prev.Id > id {
+					return nil, libkb.NewChatThreadConsistencyError(
+						libkb.OutOfOrderID,
+						"MessageID %d thinks that message %d is previous.",
+						id,
+						prev.Id)
+				}
+			}
+
 			knownMessages[id] = msg
 			unprevedIDs[id] = struct{}{}
 		}
@@ -49,15 +61,6 @@ func CheckPrevPointersAndGetUnpreved(thread *chat1.ThreadView) ([]chat1.MessageP
 	seenHashes := make(map[chat1.MessageID]chat1.Hash)
 	for id, msg := range knownMessages {
 		for _, prev := range msg.ClientHeader.Prev {
-			// Check that the prev's ID doesn't come after us. That would make no sense.
-			if prev.Id > id {
-				return nil, libkb.NewChatThreadConsistencyError(
-					libkb.OutOfOrderID,
-					"MessageID %d thinks that message %d is previous.",
-					id,
-					prev.Id)
-			}
-
 			// If this message has been referred to before, check that it's
 			// always referred to with the same hash.
 			seenHash := seenHashes[prev.Id]
