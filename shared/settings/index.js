@@ -8,12 +8,12 @@ import type {RouteProps} from '../route-tree/render-route'
 
 // $FlowIssue type this connector
 export default connect(
-  (state, {routeSelected, routeLeafTags}: RouteProps<*, *>) => ({
+  (state, {routeSelected, routeLeafTags}: RouteProps<{}, {}>) => ({
     showComingSoon: !flags.tabSettingsEnabled,
     selectedTab: routeSelected,
     isModal: routeLeafTags.modal,
   }),
-  (dispatch, {routePath}: RouteProps<*, *>) => ({
+  (dispatch, {routePath}: RouteProps<{}, {}>) => ({
     onTabChange: tab => { dispatch(switchTo(routePath.push(tab))) },
   })
 )(SettingsContainer)

@@ -19,8 +19,8 @@ type OwnProps = {
   onBack: () => void,
 }
 
-const connector: Connector<RouteProps<OwnProps, *>, {waitingForResponse: $PropertyType<Props, 'waitingForResponse'>} & OwnProps> = connect(
-  (state: TypedState, {routeProps: {onBack, onSubmit}}: RouteProps<OwnProps, *>) => ({
+const connector: Connector<RouteProps<OwnProps, {}>, {waitingForResponse: $PropertyType<Props, 'waitingForResponse'>} & OwnProps> = connect(
+  (state: TypedState, {routeProps: {onBack, onSubmit}}: RouteProps<OwnProps, {}>) => ({
     onBack,
     onSubmit,
     waitingForResponse: state.login.waitingForResponse,

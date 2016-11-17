@@ -14,7 +14,7 @@ type OwnProps = RouteProps<{
   platform: PlatformsExpandedType,
   proofId: string,
   platformHandle: string,
-}, *>
+}, {}>
 
 class RevokeContainer extends Component<void, Props, void> {
   static parseRoute (currentPath, uri) {

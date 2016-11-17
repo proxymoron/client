@@ -36,7 +36,7 @@ type OwnProps = RouteProps<{
   error: string,
   onBack: () => void,
   onSubmit: (paperkey: string) => void,
-}, *>
+}, {}>
 
 export default connect(
   (state: TypedState, {routeProps}: OwnProps) => ({

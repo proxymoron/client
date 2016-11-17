@@ -16,13 +16,14 @@ import type {MissingProof} from '../common-adapters/user-proofs'
 import type {Proof} from '../constants/tracker'
 import type {RouteProps} from '../route-tree/render-route'
 import type {Props} from './index'
+import type {Tab as FriendshipsTab} from './friendships'
 
 type OwnProps = {
   routeProps: {
     username: ?string,
     uid: ?string,
   },
-} & RouteProps<*, *>
+} & RouteProps<{}, {currentFriendshipsTab: FriendshipsTab}>
 
 type EitherProps<P> = {
   type: 'ok',
