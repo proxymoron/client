@@ -48,8 +48,8 @@ class RenderRouteNode extends PureComponent<*, RenderRouteNodeProps<*>, *> {
     const RouteComponent = isContainer ? routeDef.containerComponent : routeDef.component
     return (
       <RouteComponent
-        routeProps={routeState.props.toJS()}
-        routeState={routeDef.initialState.merge(routeState.state).toJS()}
+        routeProps={routeState.props.toObject()}
+        routeState={routeDef.initialState.merge(routeState.state).toObject()}
         routeSelected={routeState.selected}
         routePath={path}
         routeLeafTags={leafTags || LeafTags()}
