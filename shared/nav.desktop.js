@@ -3,7 +3,7 @@ import React from 'react'
 import {Box} from './common-adapters'
 import GlobalError from './global-errors/container'
 import TabBar from './tab-bar/index.render'
-import {loginTab, folderTab} from './constants/tabs'
+import {chatTab, loginTab, folderTab} from './constants/tabs'
 import {connect} from 'react-redux'
 import {globalStyles} from './styles'
 import {navigateTo, switchTo} from './actions/route-tree'
@@ -19,7 +19,10 @@ function Nav (props: Props) {
           onTabClick={props.switchTab}
           selectedTab={props.routeSelected}
           username={props.username}
-          badgeNumbers={{[folderTab]: props.folderBadge}}
+          badgeNumbers={{
+            [folderTab]: props.folderBadge,
+            [chatTab]: props.chatBadge,
+          }}
         />
       }
       <GlobalError />
@@ -38,13 +41,12 @@ const stylesTabsContainer = {
 export default connect(
   ({
     config: {extendedConfig, username},
-    favorite: {publicBadge = 0, privateBadge = 0},
-    notifications: {menuBadge},
+    notifications: {menuBadge, menuNotifications},
   }) => ({
     provisioned: extendedConfig && !!extendedConfig.defaultDeviceID,
     username,
-    menuBadge,
-    folderBadge: publicBadge + privateBadge,
+    folderBadge: menuNotifications.folderBadge,
+    chatBadge: menuNotifications.chatBadge,
   }),
   (dispatch: any, {routeSelected, routePath}) => ({
     switchTab: (tab: Tab) => {

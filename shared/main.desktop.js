@@ -5,6 +5,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import RenderRoute from './route-tree/render-route'
 import flags from './util/feature-flags'
+import {isDarwin} from './constants/platform'
 
 import {navigateUp, setRouteState} from './actions/route-tree'
 
@@ -30,7 +31,7 @@ class Main extends Component<void, Props, void> {
   }
 
   _handleKeyDown (e: SyntheticKeyboardEvent) {
-    const modKey = process.platform === 'darwin' ? e.metaKey : e.ctrlKey
+    const modKey = isDarwin ? e.metaKey : e.ctrlKey
     // TODO (MBG): add back once we have a back action
     // if (modKey && e.key === 'ArrowLeft') {
     //   e.preventDefault()
@@ -45,12 +46,13 @@ class Main extends Component<void, Props, void> {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    if (this.props.folderBadge !== nextProps.folderBadge) {
-      return true
-    }
-
+    // MUST be first
     if (this.props.menuBadge !== nextProps.menuBadge) {
       ipcRenderer.send(this.props.menuBadge ? 'showTrayRegular' : 'showTrayBadged')
+    }
+
+    if (this.props.folderBadge !== nextProps.folderBadge) {
+      return true
     }
 
     return !this.props.routeState.equals(nextProps.routeState) || !this.props.routeDef.equals(nextProps.routeDef)
@@ -58,6 +60,7 @@ class Main extends Component<void, Props, void> {
 
   componentDidMount () {
     if (flags.admin) window.addEventListener('keydown', this._handleKeyDown)
+    ipcRenderer.send('showTray', this.props.menuBadge)
   }
 
   componentWillUnmount () {

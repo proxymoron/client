@@ -12,6 +12,7 @@ export type Props = {
   switchTab: (tab: Tab) => void,
   navigateUp: () => void,
   folderBadge: number,
+  chatBadge: number,
   children: React$Element<*>,
   routeSelected: Tab,
   routeStack: RouteRenderStack,

@@ -57,21 +57,26 @@ export default class PinentryRender extends Component<DefaultProps, Props, State
     const submitPassphrase = () => this.props.onSubmit(this.state.passphrase, this.state.features)
 
     const isPaperKey = this.props.type === PassphraseCommonPassphraseType.paperKey
-    const typeStyle = {
+    const typeStyle: $Shape<{
+      hintText: string,
+      style: Object,
+      multiline: boolean,
+      rowsMax: number,
+      floatingHintTextOverride: string,
+    }> = {
       [PassphraseCommonPassphraseType.verifyPassPhrase]: {
-        floatingLabelText: 'Verify Passphrase',
+        hintText: 'Verify Passphrase',
         style: {marginBottom: 0},
       },
       [PassphraseCommonPassphraseType.passPhrase]: {
-        floatingLabelText: 'Passphrase',
+        hintText: 'Passphrase',
         style: {marginBottom: 0},
       },
       [PassphraseCommonPassphraseType.paperKey]: {
-        floatingLabelText: 'Paperkey',
+        floatingHintTextOverride: 'Paperkey',
         multiline: true,
         rowsMax: 2,
         hintText: 'elephont sturm cectus opp blezzard tofi pando agg whi pany yaga jocket daubt ruril globil cose',
-        checkboxContainerStyle: {bottom: 0},
       },
     }[this.props.type]
 
@@ -82,7 +87,7 @@ export default class PinentryRender extends Component<DefaultProps, Props, State
     }[this.props.type]
 
     const inputProps = {
-      onChange: event => this.setState({passphrase: event.target.value}),
+      onChangeText: passphrase => this.setState({passphrase}),
       onEnterKeyDown: () => submitPassphrase(),
       type: this.state.showTyping ? 'passwordVisible' : 'password',
       errorText: this.props.retryLabel,
@@ -108,12 +113,11 @@ export default class PinentryRender extends Component<DefaultProps, Props, State
           <Text type='Body' style={{textAlign: 'center'}}>{this.props.prompt}</Text>
           {isPaperKey && <Icon type='icon-paper-key-48' style={{alignSelf: 'center'}} />}
           <FormWithCheckbox
-            style={{alignSelf: 'stretch'}}
             inputProps={inputProps}
             checkboxContainerStyle={{paddingLeft: 60, paddingRight: 60, ...checkboxContainerStyle}}
             checkboxesProps={checkboxProps}
           />
-          <Button style={{alignSelf: 'flex-end'}} type='Primary' label={this.props.submitLabel} onClick={submitPassphrase} disabled={!this.state.passphrase} />
+          <Button style={{alignSelf: 'center'}} type='Primary' label={this.props.submitLabel} onClick={submitPassphrase} disabled={!this.state.passphrase} />
         </Box>
       </Box>
     )
