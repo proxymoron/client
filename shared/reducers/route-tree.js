@@ -36,18 +36,7 @@ function routeStateReducer (routeDef, routeState, action) {
       return routeSetProps(routeDef, null, [])
 
     case Constants.setRouteDef:
-      let newRouteState
-      try {
-        newRouteState = routeNavigate(action.payload.routeDef, routeState, getPath(routeState))
-      } catch (err) {
-        if (err instanceof InvalidRouteError) {
-          console.warn('New route tree mismatches current state. Resetting route state.')
-          newRouteState = routeSetProps(action.payload.routeDef, null, [])
-        } else {
-          throw err
-        }
-      }
-      return newRouteState
+      return routeNavigate(action.payload.routeDef, routeState, getPath(routeState))
 
     case Constants.switchTo:
       return routeSetProps(routeDef, routeState, action.payload.path, action.payload.parentPath)
@@ -94,8 +83,12 @@ export default function routeTreeReducer (state: State = initialState, action: a
   try {
     newRouteDef = routeDefReducer(routeDef, action)
     newRouteState = routeStateReducer(routeDef, routeState, action)
-  } catch (e) {
-    console.error(`Attempt to perform ${action.type} on ${pathToString(getPath(routeState))} raised exception: ${e}. Aborting.`)
+  } catch (err) {
+    if (action.type === Constants.setRouteDef && err instanceof InvalidRouteError) {
+      console.warn('New route tree mismatches current state. Not updating (please reload manually if needed).')
+    } else {
+      console.error(`Attempt to perform ${action.type} on ${pathToString(getPath(routeState))} raised exception: ${err}. Aborting.`)
+    }
     return state
   }
 
