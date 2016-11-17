@@ -44,13 +44,10 @@ class Main extends Component<void, Props, void> {
     }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    // MUST be first
-    if (this.props.menuBadge !== nextProps.menuBadge) {
+  componentDidUpdate (prevProps) {
+    if (this.props.menuBadge !== prevProps.menuBadge) {
       ipcRenderer.send(this.props.menuBadge ? 'showTrayRegular' : 'showTrayBadged')
     }
-
-    return !this.props.routeState.equals(nextProps.routeState) || !this.props.routeDef.equals(nextProps.routeDef)
   }
 
   componentDidMount () {
