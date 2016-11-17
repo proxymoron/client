@@ -99,7 +99,7 @@ type PathIterable<X> = I.IndexedSeq<X> | I.List<X> | Array<X>
 export type Path = PathIterable<string>
 export type PropsPath<P> = PathIterable<string | {selected: string | null, props: P}>
 type PathParam<P> = [] | Path | PropsPath<P>  // Flow doesn't accept Path as a subtype of PropsPath, so be explicit here.
-type PathSetSpec<P> = I.IndexedIterable<{type: 'next' | 'navigate', next: string | null, props?: P}>
+type PathSetSpec<P> = I.IndexedIterable<{type: 'traverse' | 'navigate', next: string | null, props?: P}>
 
 // Traverse a routeState making changes according to the pathSpec. This is the
 // primary mutation function for navigation and changing props. It will follow
@@ -117,7 +117,7 @@ function _routeSet (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathSpe
     }
   }
 
-  const childName = pathHead && pathHead.type === 'next' ? pathHead.next : newRouteState.selected
+  const childName = pathHead && pathHead.type === 'traverse' ? pathHead.next : newRouteState.selected
   if (childName !== null) {
     const childDef = routeDef.getChild(childName)
     if (!childDef) {
@@ -145,7 +145,7 @@ export function routeSetProps (routeDef: RouteDefNode, routeState: ?RouteStateNo
     }
   })
   const parentPathSeq = I.Seq(parentPath || []).map(item => {
-    return {type: 'next', next: item}
+    return {type: 'traverse', next: item}
   })
   return _routeSet(routeDef, routeState, parentPathSeq.concat(pathSeq))
 }
