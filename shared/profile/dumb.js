@@ -259,6 +259,10 @@ const dumbMap: DumbComponentMap<Profile> = {
       isYou: true,
       proofs: [],
     },
+    'Your Profile - Following Tab': {
+      ...propsBase,
+      currentFriendshipsTab: 'Following',
+    },
     'Unfollowed': propsBase,
     'Unfollowed - Profile page': {
       ...propsBase,
