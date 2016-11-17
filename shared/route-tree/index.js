@@ -181,20 +181,16 @@ export function routeClear (routeState: ?RouteStateNode, path: Path): ?RouteStat
 
 // Traverse a routeState, making sure it matches the routeDef and ends on a leaf component.
 export function checkRouteState (routeDef: RouteDefNode, routeState: ?RouteStateNode): ?string {
-  if (!routeDef) {
-    return
-  }
-
   let path = []
   let curDef = routeDef
   let curState = routeState
-  while (curState && curState.selected !== null) {
+  while (curDef && curState && curState.selected !== null) {
     path.push(curState.selected)
     curDef = curDef.getChild(curState.selected)
     curState = curState.getChild(curState.selected)
-    if (!curDef) {
-      return `Missing route def: ${pathToString(path)}`
-    }
+  }
+  if (!curDef) {
+    return `Missing route def: ${pathToString(path)}`
   }
   if (!curState) {
     return `Route missing state: ${pathToString(path)}`

@@ -92,10 +92,13 @@ export default function routeTreeReducer (state: State = initialState, action: a
     return state
   }
 
-  const routeError = checkRouteState(newRouteDef, newRouteState)
-  if (routeError) {
-    console.error(`Attempt to perform ${action.type} on ${pathToString(getPath(routeState))} would result in invalid routeTree state: "${routeError}". Aborting.`)
-    return state
+  if (!I.is(routeDef, newRouteDef) || !I.is(routeState, newRouteState)) {
+    // If we changed something, sanity check new state for errors.
+    const routeError = checkRouteState(newRouteDef, newRouteState)
+    if (routeError) {
+      console.error(`Attempt to perform ${action.type} on ${pathToString(getPath(routeState))} would result in invalid routeTree state: "${routeError}". Aborting.`)
+      return state
+    }
   }
 
   return state.merge({
