@@ -18,16 +18,12 @@ class InvitationsContainer extends Component<void, Props, void> {
   }
 
   render () {
-    console.log(this.props)
     return <Invites
       {...this.props}
       showMessageField={!!this.props.inviteEmail}
     />
   }
 }
-
-// move to typedconnect
-// lenses that return where they came from in their composed stuff
 
 export default connect(
   (state: TypedState, {routeState}) => ({
