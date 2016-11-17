@@ -57,8 +57,8 @@ const ConnectedFolders = connect(
   }),
   (dispatch: any, {routePath, routeState, setRouteState}: OwnProps) => ({
     favoriteList: () => { dispatch(favoriteList()) },
-    onOpenFolder: path => { dispatch(navigateAppend([{selected: 'files', path}])) },
-    onRekeyFolder: path => { dispatch(navigateAppend([{selected: 'files', path}])) },
+    onOpenFolder: path => { dispatch(navigateAppend([{selected: 'files', props: {path}}])) },
+    onRekeyFolder: path => { dispatch(navigateAppend([{selected: 'files', props: {path}}])) },
     openInKBFS: path => { dispatch(openInKBFS(path)) },
     switchTab: showingPrivate => { dispatch(switchTo(routePath.pop().push(showingPrivate ? 'private' : 'public'))) },
     onToggleShowIgnored: () => { setRouteState({showingIgnored: !routeState.showingIgnored}) },

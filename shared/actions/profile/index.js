@@ -70,7 +70,7 @@ function onUserClick (username: string, uid: string): OnUserClick {
 function * _onUserClick (action: OnUserClick): SagaGenerator<any, any> {
   const {username, uid} = action.payload
   yield put(switchTo([profileTab]))
-  yield put(navigateAppend([{selected: 'profile', username, uid}], [profileTab]))
+  yield put(navigateAppend([{selected: 'profile', props: {username, uid}}], [profileTab]))
 }
 
 function onClickAvatar (username: ?string, uid: string, openWebsite?: boolean): OnClickAvatar {

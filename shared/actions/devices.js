@@ -46,7 +46,7 @@ function * _deviceShowRemovePageSaga (showRemovePageAction: ShowRemovePage): Sag
   } catch (e) {
     console.warn('Error getting endangered TLFs:', e)
   }
-  yield put(navigateAppend([{selected: 'removeDevice', device, endangeredTLFs}], [devicesTab, 'devicePage']))
+  yield put(navigateAppend([{selected: 'removeDevice', props: {device, endangeredTLFs}}], [devicesTab, 'devicePage']))
 }
 
 function * _deviceListSaga (): SagaGenerator<any, any> {

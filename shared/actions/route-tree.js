@@ -51,7 +51,7 @@ export function switchTo (path: Path, parentPath?: Path): SwitchTo {
 //
 // If parentPath is provided, the path will be navigated to relative to
 // parentPath without navigating to it.
-export function navigateTo (path: PropsPath, parentPath?: Path): NavigateTo {
+export function navigateTo (path: PropsPath<*>, parentPath?: Path): NavigateTo {
   return {
     type: Constants.navigateTo,
     payload: {path, parentPath},
@@ -61,7 +61,7 @@ export function navigateTo (path: PropsPath, parentPath?: Path): NavigateTo {
 // Navigate to a path relative to the current path.
 // If parentPath is provided, the path will be appended relative to parentPath
 // without navigating to it.
-export function navigateAppend (path: PropsPath, parentPath?: Path): NavigateAppend {
+export function navigateAppend (path: PropsPath<*>, parentPath?: Path): NavigateAppend {
   return {
     type: Constants.navigateAppend,
     payload: {path, parentPath},

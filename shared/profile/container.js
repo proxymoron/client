@@ -63,12 +63,12 @@ export default connect(
     onUserClick: (username, uid) => { dispatch(onUserClick(username, uid)) },
     onBack: () => { dispatch(navigateUp()) },
     onFolderClick: folder => { dispatch(openInKBFS(folder.path)) },
-    onEditProfile: () => { dispatch(navigateAppend([{selected: 'editProfile'}])) },
-    onEditAvatar: () => { dispatch(navigateAppend([{selected: 'editAvatar'}])) },
+    onEditProfile: () => { dispatch(navigateAppend(['editProfile'])) },
+    onEditAvatar: () => { dispatch(navigateAppend(['editAvatar'])) },
     onMissingProofClick: (missingProof: MissingProof) => { dispatch(addProof(missingProof.type)) },
     onRecheckProof: (proof: Proof) => { dispatch(checkProof(proof && proof.id)) },
     onRevokeProof: (proof: Proof) => {
-      dispatch(navigateAppend([{selected: 'revoke', platform: proof.type, platformHandle: proof.name, proofId: proof.id}], [profileTab]))
+      dispatch(navigateAppend([{selected: 'revoke', props: {platform: proof.type, platformHandle: proof.name, proofId: proof.id}}], [profileTab]))
     },
     onViewProof: (proof: Proof) => { dispatch(openProofUrl(proof)) },
     getProfile: username => dispatch(getProfile(username)),

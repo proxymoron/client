@@ -283,8 +283,10 @@ function * sendInviteSaga (invitesSendAction: InvitesSend): SagaGenerator<any, a
       // TODO: if the user changes their route while working, this may lead to an invalid route
       yield put(navigateAppend([{
         selected: 'inviteSent',
-        email,
-        link,
+        props: {
+          email,
+          link,
+        },
       }]))
     }
   } catch (e) {

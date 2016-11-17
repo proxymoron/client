@@ -14,7 +14,7 @@ export default connector.connect(
     const currentDevice = state.devices.devices && state.devices.devices.find(d => d.currentDevice)
 
     return {
-      onRevokeCurrentDevice: () => { dispatch(navigateAppend([{selected: 'removeDevice', device: currentDevice}])) },
+      onRevokeCurrentDevice: () => { dispatch(navigateAppend([{selected: 'removeDevice', props: {device: currentDevice}}])) },
       onDelete: () => { dispatch(navigateAppend(['deleteConfirm'])) },
     }
   }

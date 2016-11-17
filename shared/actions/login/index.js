@@ -110,8 +110,10 @@ export function login (): AsyncAction {
             if (error.code !== InputCancelError.code) {
               dispatch(navigateAppend([{
                 selected: 'error',
-                error,
-                onBack: () => dispatch(cancelLogin()),
+                props: {
+                  error,
+                  onBack: () => dispatch(cancelLogin()),
+                },
               }], [loginTab, 'login']))
             }
           } else {
@@ -139,8 +141,10 @@ export function login (): AsyncAction {
     // We ask for user since the login will auto login with the last user which we don't always want
     dispatch(navigateAppend([{
       selected: 'usernameOrEmail',
-      onBack: () => dispatch(cancelLogin()),
-      onSubmit: loginSubmit,
+      props: {
+        onBack: () => dispatch(cancelLogin()),
+        onSubmit: loginSubmit,
+      },
     }], [loginTab, 'login']))
   }
 }
@@ -441,13 +445,15 @@ function makeKex2IncomingMap (dispatch, getState, onBack: SimpleCB, onProvisione
       // This can be appended on either loginTab or devicesTab.
       dispatch(navigateAppend([{
         selected: 'codePage',
-        mapStateToProps,
-        onBack: onBack,
-        setCodePageMode: mode => dispatch(setCodePageMode(mode)),
-        qrScanned: code => cb(code.data),
-        setCameraBrokenMode: broken => dispatch(setCameraBrokenMode(broken)),
-        textEntered: text => cb(text),
-        doneRegistering: () => dispatch(doneRegistering()),
+        props: {
+          mapStateToProps,
+          onBack: onBack,
+          setCodePageMode: mode => dispatch(setCodePageMode(mode)),
+          qrScanned: code => cb(code.data),
+          setCameraBrokenMode: broken => dispatch(setCameraBrokenMode(broken)),
+          textEntered: text => cb(text),
+          doneRegistering: () => dispatch(doneRegistering()),
+        },
       }]))
     }
   }
@@ -456,26 +462,30 @@ function makeKex2IncomingMap (dispatch, getState, onBack: SimpleCB, onProvisione
     'keybase.1.loginUi.getEmailOrUsername': (param, response) => {
       dispatch(navigateAppend([{
         selected: 'usernameOrEmail',
-        onSubmit: usernameOrEmail => response.result(usernameOrEmail),
-        onBack: () => onBack(response),
+        props: {
+          onSubmit: usernameOrEmail => response.result(usernameOrEmail),
+          onBack: () => onBack(response),
+        },
       }], [loginTab, 'login']))
     },
     'keybase.1.provisionUi.chooseDevice': ({devices}, response) => {
       dispatch(navigateAppend([{
         selected: 'selectOtherDevice',
-        devices,
-        onSelect: deviceID => {
-          // $FlowIssue
-          const type: DeviceType = (devices || []).find(d => d.deviceID === deviceID).type
-          const role = ({
-            mobile: Constants.codePageDeviceRoleExistingPhone,
-            desktop: Constants.codePageDeviceRoleExistingComputer,
-          }: {[key: DeviceType]: DeviceRole})[type]
-          dispatch(setCodePageOtherDeviceRole(role))
-          response.result(deviceID)
+        props: {
+          devices,
+          onSelect: deviceID => {
+            // $FlowIssue
+            const type: DeviceType = (devices || []).find(d => d.deviceID === deviceID).type
+            const role = ({
+              mobile: Constants.codePageDeviceRoleExistingPhone,
+              desktop: Constants.codePageDeviceRoleExistingComputer,
+            }: {[key: DeviceType]: DeviceRole})[type]
+            dispatch(setCodePageOtherDeviceRole(role))
+            response.result(deviceID)
+          },
+          onWont: () => response.result(''),
+          onBack: () => onBack(response),
         },
-        onWont: () => response.result(''),
-        onBack: () => onBack(response),
       }], [loginTab, 'login']))
     },
     'keybase.1.secretUi.getPassphrase': ({pinentry: {type, prompt, username, retryLabel}}, response) => {
@@ -483,22 +493,26 @@ function makeKex2IncomingMap (dispatch, getState, onBack: SimpleCB, onProvisione
         case PassphraseCommonPassphraseType.paperKey:
           dispatch(navigateAppend([{
             selected: 'paperkey',
-            onSubmit: (passphrase: string) => { response.result({passphrase, storeSecret: false}) },
-            onBack: () => onBack(response),
-            error: retryLabel,
+            props: {
+              onSubmit: (passphrase: string) => { response.result({passphrase, storeSecret: false}) },
+              onBack: () => onBack(response),
+              error: retryLabel,
+            },
           }], [loginTab, 'login']))
           break
         case PassphraseCommonPassphraseType.passPhrase:
           dispatch(navigateAppend([{
             selected: 'passphrase',
-            prompt,
-            onSubmit: passphrase => response.result({
-              passphrase,
-              storeSecret: false,
-            }),
-            onBack: () => onBack(response),
-            error: retryLabel,
-            username,
+            props: {
+              prompt,
+              onSubmit: passphrase => response.result({
+                passphrase,
+                storeSecret: false,
+              }),
+              onBack: () => onBack(response),
+              error: retryLabel,
+              username,
+            },
           }], [loginTab, 'login']))
           break
         default:
@@ -513,27 +527,33 @@ function makeKex2IncomingMap (dispatch, getState, onBack: SimpleCB, onProvisione
     'keybase.1.provisionUi.PromptNewDeviceName': ({existingDevices, errorMessage}, response) => {
       dispatch(navigateAppend([{
         selected: 'setPublicName',
-        existingDevices,
-        deviceNameError: errorMessage,
-        onSubmit: deviceName => { response.result(deviceName) },
-        onBack: () => onBack(response),
+        props: {
+          existingDevices,
+          deviceNameError: errorMessage,
+          onSubmit: deviceName => { response.result(deviceName) },
+          onBack: () => onBack(response),
+        },
       }], [loginTab, 'login']))
     },
     'keybase.1.provisionUi.chooseGPGMethod': (param, response) => {
       dispatch(navigateAppend([{
         selected: 'gpgSign',
-        onSubmit: exportKey => response.result(exportKey ? ProvisionUiGPGMethod.gpgImport : ProvisionUiGPGMethod.gpgSign),
-        onBack: () => onBack(response),
+        props: {
+          onSubmit: exportKey => response.result(exportKey ? ProvisionUiGPGMethod.gpgImport : ProvisionUiGPGMethod.gpgSign),
+          onBack: () => onBack(response),
+        },
       }], [loginTab, 'login']))
     },
     'keybase.1.loginUi.displayPrimaryPaperKey': ({sessionID, phrase}, response) => {
       dispatch(navigateAppend([{
         selected: 'success',
-        paperKey: new HiddenString(phrase),
-        waiting: false,
-        onFinish: () => { response.result() },
-        onBack: () => onBack(response),
-        title: 'Your new paper key!',
+        props: {
+          paperKey: new HiddenString(phrase),
+          waiting: false,
+          onFinish: () => { response.result() },
+          onBack: () => onBack(response),
+          title: 'Your new paper key!',
+        },
       }], [loginTab, 'login']))
     },
     'keybase.1.provisionUi.ProvisioneeSuccess': (param, response) => {

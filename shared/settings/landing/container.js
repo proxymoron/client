@@ -55,7 +55,7 @@ export default connect(
     onBootstrap: () => { dispatch(actions.loadSettings()) },
     onChangePassphrase: () => dispatch(navigateAppend(['changePassphrase'])),
     onChangeEmail: () => dispatch(navigateAppend(['changeEmail'])),
-    onInfo: selectedLevel => dispatch(navigateAppend([{selected: 'changePlan', selectedLevel}])),
+    onInfo: selectedLevel => dispatch(navigateAppend([{selected: 'changePlan', props: {selectedLevel}}])),
   }),
   (stateProps, dispatchProps, ownProps: {}) => {
     if (!stateProps.bootstrapDone) {

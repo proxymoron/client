@@ -97,16 +97,16 @@ export class InvalidRouteError extends Error {}
 // make.
 type PathIterable<X> = I.IndexedSeq<X> | I.List<X> | Array<X>
 export type Path = PathIterable<string>
-export type PropsPath = PathIterable<string | {selected: string | null}>
-type PathParam = [] | Path | PropsPath  // Flow doesn't accept Path as a subtype of PropsPath, so be explicit here.
-type PathSetSpec = I.IndexedIterable<{type: 'next' | 'navigate', next: string | null, props?: {}}>
+export type PropsPath<P> = PathIterable<string | {selected: string | null, props: P}>
+type PathParam<P> = [] | Path | PropsPath<P>  // Flow doesn't accept Path as a subtype of PropsPath, so be explicit here.
+type PathSetSpec<P> = I.IndexedIterable<{type: 'next' | 'navigate', next: string | null, props?: P}>
 
 // Traverse a routeState making changes according to the pathSpec. This is the
 // primary mutation function for navigation and changing props. It will follow
 // the "next" props of each item in the pathSpec, then following any
 // defaultSelected from the routeDefs. It creates any routeState nodes that
 // don't exist along the way.
-function _routeSet (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathSpec: PathSetSpec): RouteStateNode {
+function _routeSet (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathSpec: PathSetSpec<*>): RouteStateNode {
   const pathHead = pathSpec && pathSpec.first()
 
   let newRouteState = routeState || new RouteStateNode({selected: routeDef.defaultSelected})
@@ -136,13 +136,12 @@ function _routeSet (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathSpe
   return newRouteState
 }
 
-export function routeSetProps (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathProps: PathParam, parentPath: ?Path): RouteStateNode {
+export function routeSetProps (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathProps: PathParam<*>, parentPath: ?Path): RouteStateNode {
   const pathSeq = I.Seq(pathProps).map(item => {
     if (typeof item === 'string') {
       return {type: 'navigate', next: item}
     } else {
-      const {selected, ...props} = item
-      return {type: 'navigate', next: selected, props}
+      return {type: 'navigate', next: item.selected, props: item.props}
     }
   })
   const parentPathSeq = I.Seq(parentPath || []).map(item => {
@@ -151,8 +150,8 @@ export function routeSetProps (routeDef: RouteDefNode, routeState: ?RouteStateNo
   return _routeSet(routeDef, routeState, parentPathSeq.concat(pathSeq))
 }
 
-export function routeNavigate (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathProps: PathParam, parentPath: ?Path): RouteStateNode {
-  return routeSetProps(routeDef, routeState, I.List(pathProps).push({selected: null}), parentPath)
+export function routeNavigate (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathProps: PathParam<*>, parentPath: ?Path): RouteStateNode {
+  return routeSetProps(routeDef, routeState, I.List(pathProps).push({selected: null, props: {}}), parentPath)
 }
 
 export function routeSetState (routeDef: RouteDefNode, routeState: RouteStateNode, path: Path, partialState: {}): RouteStateNode {
