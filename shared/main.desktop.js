@@ -16,7 +16,6 @@ type Props = {
   provisioned: boolean,
   username: string,
   navigateUp: () => void,
-  folderBadge: number,
   routeDef: RouteDefNode,
   routeState: RouteStateNode,
   setRouteState: (path: Path, partialState: {}) => void,
@@ -51,10 +50,6 @@ class Main extends Component<void, Props, void> {
       ipcRenderer.send(this.props.menuBadge ? 'showTrayRegular' : 'showTrayBadged')
     }
 
-    if (this.props.folderBadge !== nextProps.folderBadge) {
-      return true
-    }
-
     return !this.props.routeState.equals(nextProps.routeState) || !this.props.routeDef.equals(nextProps.routeDef)
   }
 
@@ -83,14 +78,12 @@ export default connect(
   ({
     routeTree: {routeDef, routeState},
     config: {extendedConfig, username},
-    favorite: {publicBadge = 0, privateBadge = 0},
     notifications: {menuBadge}}) => ({
       routeDef,
       routeState,
       provisioned: extendedConfig && !!extendedConfig.defaultDeviceID,
       username,
       menuBadge,
-      folderBadge: publicBadge + privateBadge,
     }),
   dispatch => {
     return {
