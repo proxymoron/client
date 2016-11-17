@@ -56,7 +56,7 @@ export default function TabBar ({selectedTab, onTabClick, username, badgeNumbers
       }
       {flags.tabPeopleEnabled &&
         <TabBarButton
-          label='Chat'
+          label='People'
           selected={selectedTab === peopleTab}
           onClick={() => onTabClick(peopleTab)}
           badgeNumber={badgeNumbers[peopleTab]}
@@ -93,16 +93,6 @@ export default function TabBar ({selectedTab, onTabClick, username, badgeNumbers
           justifyContent: 'flex-end',
         }}
       />
-      {flags.tabPeopleEnabled &&
-        <TabBarButton
-          label='People'
-          selected={selectedTab === peopleTab}
-          onClick={() => onTabClick(peopleTab)}
-          badgeNumber={badgeNumbers[peopleTab]}
-          source={{type: 'nav', icon: 'iconfont-people'}}
-          style={stylesTabButton}
-        />
-      }
     </Box>
   )
 }
