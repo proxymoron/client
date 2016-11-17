@@ -26,14 +26,14 @@ export type RouteProps<P, S> = {
   routeStack: I.List<React$Element<any>>,
 
   // Call to update the state of the route node that rendered this component.
-  setRouteState: (partialState: {}) => void,
+  setRouteState: (partialState: $Shape<S>) => void,
 }
 
-type RenderRouteNodeProps = {
+type RenderRouteNodeProps<S> = {
   isContainer: boolean,
   routeDef: RouteDefNode,
   routeState: RouteStateNode,
-  setRouteState: (partialState: {}) => void,
+  setRouteState: (partialState: $Shape<S>) => void,
   path: I.List<string>,
   leafTags?: LeafTags,
   stack?: I.List<React$Element<any>>,
@@ -42,7 +42,7 @@ type RenderRouteNodeProps = {
 
 // Helper to render a component based on route state and use
 // shouldComponentUpdate (via PureComponent).
-class RenderRouteNode extends PureComponent<*, RenderRouteNodeProps, *> {
+class RenderRouteNode extends PureComponent<*, RenderRouteNodeProps<*>, *> {
   render () {
     const {isContainer, routeDef, routeState, setRouteState, path, leafTags, stack, children} = this.props
     const RouteComponent = isContainer ? routeDef.containerComponent : routeDef.component
