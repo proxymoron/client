@@ -156,6 +156,9 @@ type RenderRouteProps = {
 
 export default class RenderRoute extends PureComponent<*, RenderRouteProps, *> {
   render () {
-    return _RenderRoute(this.props).last().component
+    // _RenderRoute gives us a stack of all views down the current route path.
+    // This component renders the bottom (currently visible) one.
+    var viewStack = _RenderRoute(this.props)
+    return viewStack.last().component
   }
 }
