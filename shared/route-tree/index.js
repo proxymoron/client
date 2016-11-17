@@ -113,6 +113,8 @@ function _routeSet (routeDef: RouteDefNode, routeState: ?RouteStateNode, pathSpe
   if (pathHead && pathHead.type === 'navigate') {
     newRouteState = newRouteState.set('selected', pathHead.next || routeDef.defaultSelected)
     if (pathHead.next === null) {
+      // Navigating to a route clears out the state of any children that may
+      // have previously been displayed.
       newRouteState = newRouteState.delete('children')
     }
   }
