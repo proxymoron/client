@@ -380,7 +380,7 @@ const styleFolderIcon = {
 }
 
 const styleFriendships = {
-  marginTop: globalMargins.medium,
+  marginTop: globalMargins.large,
 }
 
 const styleProofMenu = {
