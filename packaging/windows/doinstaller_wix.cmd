@@ -5,13 +5,20 @@
 :: For Jenkins:
 if DEFINED WORKSPACE set GOPATH=%WORKSPACE%
 set GOARCH=386
+
+echo %KEYBASE_SECRET_STORE_FILE%
+:: This has to be reset too for a separate batch command
+if DEFINED BUILD_NUMBER set KEYBASE_WINBUILD=%BUILD_NUMBER%
+set SIGNTOOL=signtool
+set CERTISSUER=DigiCert
+
 ::
 :: get the target build folder. Assume winresource.exe has been built.
 :: If not, go there and do "go generate"
 set Folder=%GOPATH%\src\github.com\keybase\client\go\keybase\
 set PathName=%Folder%keybase.exe
 
-if NOT DEFINED DOKAN_PATH set DOKAN_PATH=%GOPATH%\bin\dokan-dev\dokan-v1.0.0-RC4.2
+if NOT DEFINED DOKAN_PATH set DOKAN_PATH=c:\work\bin\dokan-dev\build81
 echo DOKAN_PATH %DOKAN_PATH%
 
 for /F delims^=^"^ tokens^=2 %%x in ('findstr ProductCodeX64 %DOKAN_PATH%\dokan_wix\version.xml') do set DokanProductCodeX64=%%x

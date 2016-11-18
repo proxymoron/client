@@ -18,6 +18,8 @@ del keybase.exe
 go version
 go generate
 
+if DEFINED BUILD_NUMBER set KEYBASE_WINBUILD=%BUILD_NUMBER%
+
 for /f %%i in ('winresource.exe -cv') do set KEYBASE_VERSION=%%i
 echo KEYBASE_VERSION %KEYBASE_VERSION%
 for /f %%i in ('winresource.exe -cb') do set KEYBASE_BUILD=%%i
@@ -61,10 +63,3 @@ pushd %GOPATH%\src\github.com\keybase\client\go\tools\dokanclean
 go build
 popd
 
-:: Then the desktop:
-pushd  %GOPATH%\src\github.com\keybase\client\desktop
-:: rmdir /s /q node_modules
-npm i
-
-buildui.bat
-popd
