@@ -81,11 +81,11 @@ export class RouteStateNode extends _RouteStateNode {
     super(data)
   }
 
-  getChild (name: string): RouteStateNode {
+  getChild (name: string): ?RouteStateNode {
     return this.children.get(name)
   }
 
-  updateChild (name: string, op: (node: RouteStateNode) => ?RouteStateNode): RouteStateNode {
+  updateChild (name: string, op: (node: ?RouteStateNode) => ?RouteStateNode): RouteStateNode {
     return this.updateIn(['children', name], op)
   }
 }
@@ -161,9 +161,12 @@ export function routeSetState (routeDef: RouteDefNode, routeState: RouteStateNod
   if (!pathSeq.size) {
     return routeState.update('state', state => state.merge(partialState))
   }
-  return routeState.updateChild(pathSeq.first(),
-    childState => routeSetState(routeDef, childState, pathSeq.skip(1), partialState)
-  )
+  return routeState.updateChild(pathSeq.first(), childState => {
+    if (!childState) {
+      throw new InvalidRouteError(`Missing state child: ${pathSeq.first()}`)
+    }
+    return routeSetState(routeDef, childState, pathSeq.skip(1), partialState)
+  })
 }
 
 export function routeClear (routeState: ?RouteStateNode, path: Path): ?RouteStateNode {
@@ -205,13 +208,13 @@ export function getPath (routeState: RouteStateNode, parentPath?: Path): I.List<
   let curState = routeState
 
   if (parentPath) {
-    I.Seq(parentPath).forEach(next => {
-      curState = curState.getChild(next)
+    for (const next of parentPath) {
+      curState = curState && curState.getChild(next)
       if (!curState) {
-        return path
+        return I.List(path)
       }
       path.push(next)
-    })
+    }
   }
 
   while (curState && curState.selected !== null) {
